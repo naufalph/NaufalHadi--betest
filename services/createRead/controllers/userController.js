@@ -60,7 +60,7 @@ class userController {
         identityNumber: req.body.identityNumber,
       });
       console.log(data);
-      res.status(200).json(data);
+      res.status(201).json(data);
     } catch (error) {
       next(error);
     }
