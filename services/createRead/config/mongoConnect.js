@@ -1,23 +1,24 @@
 const { MongoClient } = require("mongodb");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+// const password = process.env.mongoDB_pass;
 
-const password = process.env.mongoDB_pass;
-const uri = `mongodb+srv://bucat17:${password}@cluster0.uhugfzo.mongodb.net/?retryWrites=true&w=majority`;
-const client = new MongoClient(uri);
+// const uri = `mongodb+srv://bucat17:${password}@cluster0.uhugfzo.mongodb.net/?retryWrites=true&w=majority`;
+const uri = process.env.mongoDB_key;
+const client = new MongoClient(uri, { tls: true });
 
 let db;
 
 async function mongoConnect() {
   try {
-    console.log(uri);
-    console.log(process.env.NODE_ENV);
     db = client.db("db_NaufalHadi_betest");
-    // console.log(db);
   } catch (error) {
-    await client.close()
+    await client.close();
   }
 }
-function getDB(){
+function getDB() {
   return db;
 }
 
-module.exports = {mongoConnect, getDB};
+module.exports = { mongoConnect, getDB };
