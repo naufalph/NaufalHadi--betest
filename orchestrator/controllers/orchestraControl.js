@@ -92,9 +92,14 @@ class orchestraControl {
   static async editOne(req, res, next) {
     try {
       const payload = req.body;
+      // console.log(req.headers.access_token);
       const { data } = await axios({
         method: "put",
         url: `${updateDeleteUri}/accountNumber/${req.params.accountNumber}`,
+        headers: {
+          access_token: req.headers.access_token,
+          // "X-Requested-With": "XMLHttpRequest",
+        },
         data: payload,
       });
       await redis.del(`users:getAll`);
@@ -102,20 +107,28 @@ class orchestraControl {
       console.log(data);
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
+      console.log(error.response?.data);
+      res.status(error.response?.status ||500).json(error.response?.data);
     }
   }
   static async deleteOne(req, res, next) {
     try {
+      // console.log(req.headers.access_token);
       const { data } = await axios({
         method: "delete",
         url: `${updateDeleteUri}/accountNumber/${req.params.accountNumber}`,
+        headers: {
+          access_token: req.headers.access_token,
+          // "X-Requested-With": "XMLHttpRequest",
+        },
       });
       await redis.del(`users:getAll`);
       await redis.del(`users:getOneAcc/${req.params.accountNumber}`);
       console.log(data);
       res.status(200).json(data);
-    } catch (error) {}
+    } catch (error) {
+      res.status(error.response?.status || 500).json(error.response.data);
+    }
   }
 }
 

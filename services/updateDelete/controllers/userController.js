@@ -1,3 +1,4 @@
+const { jwtEncode } = require("../auth/jwt");
 const { getDB } = require("../config/mongoConnect");
 
 class userController {
@@ -39,7 +40,33 @@ class userController {
       } else {
         throw { name: "InvalidInput" };
       }
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async loginUser(req, res, next) {
+    try {
+      const { emailAddress, accountNumber } = req.body;
+      if (!accountNumber) {
+        throw { name: "LoginError" };
+      }
+      const db = getDB();
+      const users = db.collection("Users");
+      const data = await users
+        .find({ accountNumber, emailAddress })
+        .limit(1)
+        .toArray();
+      console.log(data);
+      if (data.length === 0) {
+        throw { name: "LoginError" };
+      } else {
+        const payload = { id: data[0]._id };
+        const token = jwtEncode(payload);
+        return res.status(200).json({ access_token: token });
+      }
+    } catch (error) {
+      next(error);
+    }
   }
 }
 

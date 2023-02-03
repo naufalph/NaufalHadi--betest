@@ -10,6 +10,18 @@ function errorHandler(error, req, res, next) {
     case "InvalidInput":
       statusCode = 400;
       message = { message: `No document(s) matched.` };
+    case "InvalidToken":
+      statusCode = 401;
+      message = { message: "Authentication Fail" };
+      break;
+    case "JsonWebTokenError":
+      statusCode = 401;
+      message = { message: "Authentication Fail" };
+      break;
+    case "LoginError":
+      statusCode = 401;
+      message = { message: "Invalid Account Number / Email" };
+      break;
     default:
       break;
   }
